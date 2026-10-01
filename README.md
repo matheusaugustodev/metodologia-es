@@ -1,4 +1,4 @@
-# Tema: Explicabilidade e Transparência em Agentes Baseados em LLM ao Longo do Ciclo de Vida de Desenvolvimento de Software (SDLC): Um Mapeamento Sistemática da Literatura
+# Tema: Explicabilidade e Transparência em Agentes Baseados em LLM ao Longo do Ciclo de Vida de Desenvolvimento de Software (SDLC): Um Mapeamento Sistemático da Literatura
 
 ## Estudantes
 
