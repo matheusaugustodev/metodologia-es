@@ -1,4 +1,4 @@
-# Tema: Explicabilidade e transparência em agentes baseados em LLM ao longo do ciclo de vida do desenvolvimento de software (SDLC): um mapeamento sistemático da literatura
+# Tema: Explicabilidade e Transparência em Agentes Baseados em LLM ao Longo do Ciclo de Vida de Desenvolvimento de Software (SDLC): Um Mapeamento Sistemática da Literatura
 
 # Integrantes:
 - DAVI DUARTE NECO (Matrícula: 202302601)
