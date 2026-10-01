@@ -7,6 +7,10 @@
 - MATHEUS AUGUSTO FERREIRA MEDEIROS (Matrícula: 202305532)
 - MATHEUS VIEIRA MENDES PACHECO (Matrícula: 202302623)
 
+## Documento de Trabalho
+
+A estruturação do artigo está sendo feita no Google Docs: [Documento do artigo](https://docs.google.com/document/d/1wim1Iciu9yBbUmtnl1ZOr3PVLI1eRTKtHvNAkMdhMS4/edit?tab=t.0)
+
 ## Escopo do Estudo
 
 Mapeamento e consolidação sistemática das técnicas de Inteligência Artificial Explicável (XAI) e mecanismos de transparência (ex.: *chain-of-thought rationale*, grafos de raciocínio, atribuição de atenção, rastreamento de proveniência de contexto e inspecção de estados internos) aplicados a agentes autônomos e semi-autônomos baseados em LLMs.
