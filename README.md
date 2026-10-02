@@ -7,9 +7,17 @@
 - MATHEUS AUGUSTO FERREIRA MEDEIROS (Matrícula: 202305532)
 - MATHEUS VIEIRA MENDES PACHECO (Matrícula: 202302623)
 
-## Documento de Trabalho
+## Documentos de Trabalho
 
-A estruturação do artigo está sendo feita no Google Docs: [Documento do artigo](https://docs.google.com/document/d/1wim1Iciu9yBbUmtnl1ZOr3PVLI1eRTKtHvNAkMdhMS4/edit?tab=t.0)
+> [!IMPORTANT]
+> **📄 [Documentação do artigo (Google Docs)](https://docs.google.com/document/d/1wim1Iciu9yBbUmtnl1ZOr3PVLI1eRTKtHvNAkMdhMS4/edit?tab=t.0)**
+>
+> Documento principal onde o artigo está sendo estruturado e escrito.
+
+| Planilha | Descrição |
+| --- | --- |
+| [Estudos - Mapeamento Sistemático](https://docs.google.com/spreadsheets/d/1H6Rxr1Q_WzX-FOXynGSWa4hc7c1hJ9rNmwAt9qBS99Q/edit?gid=0#gid=0) | Estudos levantados e classificados no mapeamento |
+| [Registro de buscas](https://docs.google.com/spreadsheets/d/1yOv2-kCNidnmWYq14np6j1VPp75qHHXb_LebeTwxjzI/edit?gid=0#gid=0) | Histórico das buscas realizadas nas bases |
 
 ## Escopo do Estudo
 
@@ -34,3 +42,11 @@ Qual é o impacto documentado da explicabilidade dos agentes na tomada de decis�
 ### RQ4: Métricas e Métodos de Avaliação de XAI
 
 Como os estudos da literatura avaliam empiricamente a qualidade, fidelidade e utilidade das explicações fornecidas pelos agentes aos engenheiros de software (ex.: métricas automáticas, testes de uso com programadores, auditoria humana)?
+
+## Estrutura do Repositório
+
+| Pasta | Conteúdo |
+| --- | --- |
+| [`referencias/`](referencias/) | Guia de mapeamento sistemático (Petersen et al.), com tradução para o português |
+| [`referencias/exemplos-mapeamentos-sistematicos/`](referencias/exemplos-mapeamentos-sistematicos/) | Artigos de mapeamento sistemático usados como exemplo |
+| [`modelo-sbc/`](modelo-sbc/) | Modelo da SBC que o artigo deve seguir (LaTeX e Word) |
