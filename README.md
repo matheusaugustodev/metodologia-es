@@ -21,7 +21,7 @@
 
 ## Escopo do Estudo
 
-Mapeamento e consolidação sistemática das técnicas de Inteligência Artificial Explicável (XAI) e mecanismos de transparência (ex.: *chain-of-thought rationale*, grafos de raciocínio, atribuição de atenção, rastreamento de proveniência de contexto e inspecção de estados internos) aplicados a agentes autônomos e semi-autônomos baseados em LLMs.
+Mapeamento e consolidação sistemática das técnicas de Inteligência Artificial Explicável (XAI) e mecanismos de transparência (ex.: *chain-of-thought rationale*, grafos de raciocínio, atribuição de atenção, rastreamento de proveniência de contexto e inspeção de estados internos) aplicados a agentes autônomos e semi-autônomos baseados em LLMs.
 
 O estudo investiga como a explicabilidade é implementada e adaptada nas diferentes etapas da Engenharia de Software (Engenharia de Requisitos, Arquitetura, Codificação, Testes, DevOps e Manutenção), avaliando o impacto da transparência na confiança dos engenheiros, na facilidade de auditoria e na detecção de erros de raciocínio (*hallucinations*).
 
