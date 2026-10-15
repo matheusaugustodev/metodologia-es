@@ -14,6 +14,11 @@
 >
 > Documento principal onde o artigo está sendo estruturado e escrito.
 
+> [!NOTE]
+> **📑 [Artigo completo — versão preliminar (PDF)](artigo/explicabilidade-llm-sdlc-msl-preliminar.pdf)**
+>
+> Versão entregue para acompanhamento. Ainda **não é a versão final** e passará por revisão.
+
 | Planilha | Descrição |
 | --- | --- |
 | [Estudos - Mapeamento Sistemático](https://docs.google.com/spreadsheets/d/1H6Rxr1Q_WzX-FOXynGSWa4hc7c1hJ9rNmwAt9qBS99Q/edit?gid=0#gid=0) | Estudos levantados e classificados no mapeamento |
@@ -47,6 +52,7 @@ Como os estudos da literatura avaliam empiricamente a qualidade, fidelidade e ut
 
 | Pasta | Conteúdo |
 | --- | --- |
+| [`artigo/`](artigo/) | Versões do artigo em PDF (atualmente, a versão preliminar) |
 | [`referencias/`](referencias/) | Guia de mapeamento sistemático (Petersen et al.), com tradução para o português |
 | [`referencias/exemplos-mapeamentos-sistematicos/`](referencias/exemplos-mapeamentos-sistematicos/) | Artigos de mapeamento sistemático usados como exemplo |
 | [`modelo-sbc/`](modelo-sbc/) | Modelo da SBC que o artigo deve seguir (LaTeX e Word) |
