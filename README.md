@@ -52,6 +52,8 @@ Como os estudos da literatura avaliam empiricamente a qualidade, fidelidade e ut
 
 | Pasta | Conteúdo |
 | --- | --- |
+| [`protocolo/`](protocolo/protocolo-mapeamento-sistematico.md) | Protocolo do mapeamento sistemático |
+| [`estudos-primarios-coletados/`](estudos-primarios-coletados/) | Dados bibliográficos (`.bib`) dos estudos retornados pela string de busca em cada base |
 | [`artigo/`](artigo/) | Versões do artigo em PDF (atualmente, a versão preliminar) |
 | [`referencias/`](referencias/) | Guia de mapeamento sistemático (Petersen et al.), com tradução para o português |
 | [`referencias/exemplos-mapeamentos-sistematicos/`](referencias/exemplos-mapeamentos-sistematicos/) | Artigos de mapeamento sistemático usados como exemplo |
