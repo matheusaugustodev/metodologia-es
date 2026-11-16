@@ -23,6 +23,7 @@
 | --- | --- |
 | [Estudos - Mapeamento Sistemático](https://docs.google.com/spreadsheets/d/1H6Rxr1Q_WzX-FOXynGSWa4hc7c1hJ9rNmwAt9qBS99Q/edit?gid=0#gid=0) | Estudos levantados e classificados no mapeamento |
 | [Registro de buscas](https://docs.google.com/spreadsheets/d/1yOv2-kCNidnmWYq14np6j1VPp75qHHXb_LebeTwxjzI/edit?gid=0#gid=0) | Histórico das buscas realizadas nas bases |
+| [Seleção dos estudos (XLSX)](planilhas/selecao-estudos.xlsx) | Triagem dos 25 resultados, motivos de exclusão (CE1–CE7), snowballing e origem dos 16 incluídos — **em preenchimento** |
 
 ## Escopo do Estudo
 
@@ -55,6 +56,7 @@ Como os estudos da literatura avaliam empiricamente a qualidade, fidelidade e ut
 | [`protocolo/`](protocolo/protocolo-mapeamento-sistematico.md) | Protocolo do mapeamento sistemático |
 | [`estudos-primarios-coletados/`](estudos-primarios-coletados/) | Dados bibliográficos (`.bib`) dos estudos retornados pela string de busca em cada base |
 | [`artigo/`](artigo/) | Versões do artigo em PDF (atualmente, a versão preliminar) |
+| [`planilhas/`](planilhas/) | Planilha de seleção dos estudos (triagem, exclusões e snowballing) |
 | [`referencias/`](referencias/) | Guia de mapeamento sistemático (Petersen et al.), com tradução para o português |
 | [`referencias/exemplos-mapeamentos-sistematicos/`](referencias/exemplos-mapeamentos-sistematicos/) | Artigos de mapeamento sistemático usados como exemplo |
 | [`modelo-sbc/`](modelo-sbc/) | Modelo da SBC que o artigo deve seguir (LaTeX e Word) |
