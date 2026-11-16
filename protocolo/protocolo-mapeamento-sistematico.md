@@ -81,7 +81,7 @@ São incluídos os estudos que atendem a todos os critérios de inclusão e a ne
 
 1. Reunião dos resultados e remoção de duplicados (CE1).
 2. Aplicação dos critérios a título, resumo e palavras-chave; casos duvidosos seguem para a etapa seguinte.
-3. Leitura completa e reaplicação dos critérios, com atenção a CE5 e CE6, que distinguem os estudos em que a explicabilidade do LLM é objeto de investigação daqueles em que o LLM é apenas instrumento.
+3. Reaplicação dos critérios aos casos encaminhados, com atenção a CE5 e CE6, que distinguem os estudos em que a explicabilidade do LLM é objeto de investigação daqueles em que o LLM é apenas instrumento.
 4. *Snowballing* a partir dos estudos incluídos, iterado sobre os novos estudos até que nenhuma nova inclusão ocorra. Para trás, as listas de referências são triadas por título; para frente, verificam-se as citações aos estudos incluídos.
 
 Cada decisão é registrada com o critério aplicado e uma justificativa na planilha [`planilhas/selecao-estudos.xlsx`](../planilhas/selecao-estudos.xlsx), que contém a triagem dos 25 resultados, o *snowballing* e a origem de cada estudo incluído.
