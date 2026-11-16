@@ -2,7 +2,7 @@
 
 **Tema:** Explicabilidade e Transparência em Agentes Baseados em LLM ao Longo do Ciclo de Vida de Desenvolvimento de Software (SDLC).
 
-Este protocolo consolida o que está descrito na [versão preliminar do artigo](../artigo/explicabilidade-llm-sdlc-msl-preliminar.pdf) (Seção 3). O estudo segue as diretrizes de Petersen et al. (2015) para mapeamentos sistemáticos, complementadas por Kitchenham e Charters (2007) para a definição do protocolo.
+Este protocolo consolida o que está descrito no [artigo](../artigo/explicabilidade-llm-sdlc-msl.pdf) (Seção 3). O estudo segue as diretrizes de Petersen et al. (2015) para mapeamentos sistemáticos, complementadas por Kitchenham e Charters (2007) para a definição do protocolo.
 
 ## 1. Objetivo
 
@@ -37,17 +37,22 @@ As duas primeiras indexam os principais veículos de Engenharia de Software; o G
 
 ### Registro das buscas
 
-Busca original registrada na planilha [Registro de buscas](https://docs.google.com/spreadsheets/d/1yOv2-kCNidnmWYq14np6j1VPp75qHHXb_LebeTwxjzI/edit?gid=0#gid=0):
+A string foi executada três vezes. A busca de 01/10/2026 está registrada na planilha [Registro de buscas](https://docs.google.com/spreadsheets/d/1yOv2-kCNidnmWYq14np6j1VPp75qHHXb_LebeTwxjzI/edit?gid=0#gid=0):
 
-| Data | Base | Resultados | Observações |
+| Data | Base | Resultados | Uso |
 | --- | --- | --- | --- |
-| 01/10/2026 | Google Scholar | ~17.500 | Busca exploratória; retorno muito amplo |
-| 01/10/2026 | ACM Digital Library | 3.176 | Retorno amplo |
-| 01/10/2026 | IEEE Xplore | 58 | Retorno mais restrito |
+| 01/10/2026 | IEEE Xplore | 58 | Busca exploratória, usada na versão preliminar do artigo; os resultados não foram exportados |
+| 01/10/2026 | ACM Digital Library | 3.176 | Idem |
+| 01/10/2026 | Google Scholar | ~17.500 | Idem |
+| 05/11/2026 | IEEE Xplore | 64 | Exportação dos dados bibliográficos (`.bib`) |
+| 05/11/2026 | ACM Digital Library | 3.509 | Idem (coleta parcial) |
+| 15/11/2026 | IEEE Xplore | 65 | **Busca definitiva**, usada na seleção e no artigo |
+| 15/11/2026 | ACM Digital Library | 3.567 | Idem |
+| 15/11/2026 | Google Scholar | ~17.700 | Idem |
 
-Como os resultados são ordenados por relevância e o volume é elevado, a triagem considerou os 8 primeiros resultados na IEEE Xplore, os 9 primeiros na ACM Digital Library e os 8 primeiros no Google Scholar (25 no total).
+As contagens crescem entre as datas porque as bases continuam indexando novas publicações. Como os resultados são ordenados por relevância e o volume é elevado, a triagem considerou os 8 primeiros resultados na IEEE Xplore, os 9 primeiros na ACM Digital Library e os 8 primeiros no Google Scholar (25 no total), na busca de 15/11/2026.
 
-A coleta dos dados bibliográficos está descrita em [`estudos-primarios-coletados/`](../estudos-primarios-coletados/README.md).
+A coleta dos dados bibliográficos de 05/11/2026 está descrita em [`estudos-primarios-coletados/`](../estudos-primarios-coletados/README.md).
 
 ## 5. Critérios de inclusão e exclusão
 
@@ -77,9 +82,9 @@ São incluídos os estudos que atendem a todos os critérios de inclusão e a ne
 1. Reunião dos resultados e remoção de duplicados (CE1).
 2. Aplicação dos critérios a título, resumo e palavras-chave; casos duvidosos seguem para a etapa seguinte.
 3. Leitura completa e reaplicação dos critérios, com atenção a CE5 e CE6, que distinguem os estudos em que a explicabilidade do LLM é objeto de investigação daqueles em que o LLM é apenas instrumento.
-4. *Snowballing* a partir dos estudos incluídos.
+4. *Snowballing* a partir dos estudos incluídos, iterado sobre os novos estudos até que nenhuma nova inclusão ocorra. Para trás, as listas de referências são triadas por título; para frente, verificam-se as citações aos estudos incluídos.
 
-Divergências entre os pesquisadores são discutidas até o consenso. Os estudos levantados e classificados estão na planilha [Estudos - Mapeamento Sistemático](https://docs.google.com/spreadsheets/d/1H6Rxr1Q_WzX-FOXynGSWa4hc7c1hJ9rNmwAt9qBS99Q/edit?gid=0#gid=0).
+Cada decisão é registrada com o critério aplicado e uma justificativa na planilha [`planilhas/selecao-estudos.xlsx`](../planilhas/selecao-estudos.xlsx), que contém a triagem dos 25 resultados, o *snowballing* e a origem de cada estudo incluído. Decisões marcadas como "validar" foram tomadas a partir do resumo e aguardam leitura completa pela equipe.
 
 ## 7. Extração e classificação dos dados
 
@@ -99,10 +104,10 @@ As técnicas foram classificadas por codificação aberta seguida de agrupamento
 | T1 | Justificativa em linguagem natural (raciocínio verbalizado, CoT ou explicação textual da saída) |
 | T2 | Atribuição pós-hoc (importância de *tokens*, trechos ou características da entrada) |
 | T3 | Sinalização de incerteza e confiança |
-| T4 | Rastreamento de trajetórias do agente |
+| T4 | Rastreamento de trajetórias e proveniência (registro e análise dos passos do agente ou da origem do artefato gerado) |
 | T5 | Elicitação de necessidades de explicação |
 
-As fases do SDLC seguem Hou et al. (2024), acrescidas de revisão de código e operação.
+As fases do SDLC seguem Hou et al. (2024), acrescidas de revisão de código e de uma categoria transversal para estudos que abrangem várias fases.
 
 ## 8. Referências do protocolo
 
