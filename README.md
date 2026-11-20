@@ -15,9 +15,9 @@
 > Documento principal onde o artigo está sendo estruturado e escrito.
 
 > [!NOTE]
-> **📑 [Artigo completo (PDF)](artigo/explicabilidade-llm-sdlc-msl.pdf)** · [fonte LaTeX](artigo/latex/artigo.tex)
+> **📑 [Artigo completo (PDF)](artigo/explicabilidade-llm-sdlc-msl.pdf)** · [Word (DOCX)](artigo/explicabilidade-llm-sdlc-msl.docx) · [fonte LaTeX](artigo/latex/artigo.tex)
 >
-> Versão com a busca de 15/11/2026 e 17 estudos incluídos.
+> Versão com a busca de 15/11/2026 e 17 estudos incluídos, reduzida para 10 páginas.
 >
 > Versão anterior: [preliminar (PDF)](artigo/explicabilidade-llm-sdlc-msl-preliminar.pdf), baseada na busca exploratória de 01/10/2026 (16 estudos).
 
