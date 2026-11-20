@@ -12,6 +12,15 @@
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
+% Citação narrativa no estilo SBC: "Autor et al. \citeano{chave}" -> "Autor et al. [2024]".
+% Extrai o ano (última palavra) do rótulo do \bibitem.
+\makeatletter
+\def\sbc@lastword#1 #2\@nil{\if\relax\detokenize{#2}\relax#1\else\sbc@lastword#2\@nil\fi}
+\newcommand{\citeano}[1]{\@ifundefined{b@#1}{[?]}{%
+  [\expandafter\expandafter\expandafter\sbc@lastword\csname b@#1\endcsname{} \@nil]}%
+  \nocite{#1}}
+\makeatother
+
 \title{Explicabilidade e Transparência em Agentes Baseados em LLM ao Longo
   do Ciclo de Vida de Desenvolvimento de Software (SDLC): Um Mapeamento
   Sistemático da Literatura}
@@ -37,54 +46,44 @@
 
 \begin{abstract}
   This paper presents a systematic mapping study on explainability and
-  transparency approaches for LLM-based agents across the Software Development
-  Life Cycle (SDLC). It investigates the techniques employed, their
-  distribution across SDLC phases, their impact on developer trust and
-  debugging, and how explanation quality is evaluated. Following a systematic
-  protocol over IEEE Xplore, ACM Digital Library and Google Scholar,
-  complemented by snowballing, 17 primary studies (2022--2026) were analyzed.
-  Results show a predominance of agent trajectory tracing and post-hoc
-  attribution, a concentration on implementation and maintenance, no studies
-  on requirements, architecture or operation, and scarce assessment of
-  explanation faithfulness.
+transparency of LLM-based agents across the Software Development Life Cycle
+(SDLC), covering the techniques employed, their distribution across SDLC phases,
+their impact on developer trust and debugging, and how explanation quality is
+evaluated. Searches in IEEE Xplore, ACM Digital Library and Google Scholar,
+complemented by snowballing, yielded 17 primary studies (2022--2026). Agent
+trajectory tracing and post-hoc attribution predominate, research concentrates
+on implementation and maintenance, no study addresses requirements,
+architecture or operation, and explanation faithfulness is rarely assessed.
 \end{abstract}
 
 \begin{resumo}
   Este artigo apresenta um mapeamento sistemático sobre explicabilidade e
-  transparência em agentes baseados em LLM ao longo do ciclo de vida de
-  desenvolvimento de software (SDLC). O trabalho investiga as técnicas
-  empregadas, sua distribuição entre as fases do SDLC, seus impactos na
-  confiança e na depuração e como a qualidade das explicações é avaliada.
-  Seguindo um protocolo sistemático nas bases IEEE Xplore, ACM Digital Library
-  e Google Scholar, complementado por \textit{snowballing}, foram analisados 17
-  estudos primários (2022--2026). Os resultados mostram o predomínio do
-  rastreamento de trajetórias de agentes e da atribuição pós-hoc, a
-  concentração em implementação e manutenção, a ausência de estudos sobre
-  requisitos, arquitetura e operação e a escassa avaliação da fidelidade das
-  explicações.
+transparência em agentes baseados em LLM ao longo do ciclo de vida de
+desenvolvimento de software (SDLC), abrangendo as técnicas empregadas, sua
+distribuição entre as fases do SDLC, seus impactos na confiança e na depuração e
+a avaliação da qualidade das explicações. Buscas na IEEE Xplore, ACM Digital
+Library e Google Scholar, complementadas por \textit{snowballing}, resultaram em
+17 estudos primários (2022--2026). Predominam o rastreamento de trajetórias de
+agentes e a atribuição pós-hoc, os estudos concentram-se em implementação e
+manutenção, nenhum trata de requisitos, arquitetura ou operação, e a fidelidade
+das explicações é pouco avaliada.
 \end{resumo}
 
 \section{Introdução}
 
-A crescente adoção de \textit{Large Language Models} (LLMs) tem ampliado as
-possibilidades de aplicação da Inteligência Artificial em diferentes atividades
-da Engenharia de Software. Além do uso desses modelos como ferramentas de apoio
-pontual, observa-se o desenvolvimento de agentes baseados em LLM capazes de
-executar tarefas com diferentes níveis de autonomia, incluindo análise de
-requisitos, geração e revisão de código, elaboração de testes, identificação de
-falhas e apoio à manutenção de sistemas. Nesse cenário, a atuação desses agentes
-passa a abranger diferentes etapas do ciclo de vida de desenvolvimento de
-software (\textit{Software Development Life Cycle}, SDLC).
+A crescente adoção de \textit{Large Language Models} (LLMs) na Engenharia de
+Software levou a agentes baseados em LLM que executam, com diferentes níveis de
+autonomia, tarefas como análise de requisitos, geração e revisão de código,
+testes, identificação de falhas e manutenção, atuando em diferentes etapas do
+ciclo de vida de desenvolvimento de software (\textit{Software Development Life
+Cycle}, SDLC).
 
-O aumento da autonomia desses sistemas, entretanto, também amplia a necessidade
-de compreender e acompanhar as decisões tomadas durante sua execução. Em
-atividades de Engenharia de Software, não é suficiente que um agente produza uma
-resposta aparentemente adequada: em determinados contextos, o engenheiro também
+O aumento dessa autonomia amplia a necessidade de compreender as decisões dos
+agentes: não basta uma resposta aparentemente adequada, pois o engenheiro
 precisa identificar quais informações fundamentaram uma decisão, quais etapas
-foram executadas e quais elementos contribuíram para determinado resultado.
-Essa necessidade torna especialmente relevantes aspectos como transparência,
-rastreabilidade e explicabilidade, principalmente diante da possibilidade de
-geração de informações incorretas ou não fundamentadas por LLMs.
+foram executadas e o que contribuiu para o resultado. Isso torna relevantes a
+transparência, a rastreabilidade e a explicabilidade, sobretudo porque LLMs
+podem gerar informações incorretas ou não fundamentadas.
 
 Embora existam revisões sobre o uso de LLMs na Engenharia de Software
 \cite{hou2024,he2025} e sobre explicabilidade em modelos de aprendizado de
@@ -93,81 +92,70 @@ relacione as técnicas de explicabilidade de agentes baseados em LLM às fases d
 SDLC e sintetize como sua eficácia é avaliada.
 
 Diante disso, este artigo apresenta um mapeamento sistemático da literatura,
-conduzido segundo as diretrizes de Petersen et al. \cite{petersen2015} e
-Kitchenham e Charters \cite{kitchenham2007}, que analisa 17 estudos primários
-publicados entre 2022 e 2026. As contribuições são: (i) uma classificação das
-técnicas de explicabilidade em cinco categorias; (ii) a distribuição dessas
-técnicas pelas fases do SDLC; (iii) uma síntese das evidências sobre confiança,
-depuração e excesso de confiança; e (iv) um levantamento dos métodos de
-avaliação das explicações. As Seções~\ref{sec:fundamentacao} a~\ref{sec:conclusao}
-apresentam, respectivamente, a fundamentação teórica, o protocolo, os
-resultados, as ameaças à validade e as considerações finais.
+conduzido segundo Petersen et al. \citeano{petersen2015} e Kitchenham e Charters
+\citeano{kitchenham2007}, que analisa 17 estudos primários publicados entre 2022 e
+2026. As contribuições são: (i) uma classificação das técnicas de
+explicabilidade em cinco categorias; (ii) a distribuição dessas técnicas pelas
+fases do SDLC; (iii) uma síntese das evidências sobre confiança, depuração e
+excesso de confiança; e (iv) um levantamento dos métodos de avaliação das
+explicações.
 
 \section{Fundamentação teórica}\label{sec:fundamentacao}
 
 \subsection{Agentes baseados em LLM na Engenharia de Software}
 
-Um agente baseado em LLM é um sistema em que o modelo de linguagem atua como
-componente de raciocínio que planeja, executa ações por meio de ferramentas
-(como edição de arquivos e execução de testes) e observa os resultados dessas
-ações para decidir o passo seguinte \cite{yao2023}. Na Engenharia de Software,
-surgiram agentes capazes de resolver \textit{issues} reais de repositórios,
-avaliados em \textit{benchmarks} como o SWE-bench. Revisões recentes registram o
-uso de LLMs e de sistemas multiagentes em praticamente todas as fases do SDLC,
-da elicitação de requisitos à manutenção \cite{hou2024,he2025}. Com menor
-supervisão humana, cresce a preocupação com a confiança necessária para aceitar
-o que produzem \cite{roychoudhury2025}. Neste mapeamento, consideram-se tanto
-agentes autônomos quanto LLMs usados como assistentes, pois os mecanismos de
-explicação são, em grande parte, os mesmos.
+Um agente baseado em LLM é um sistema em que o modelo de linguagem planeja,
+executa ações por meio de ferramentas (como edição de arquivos e execução de
+testes) e observa seus resultados para decidir o passo seguinte \cite{yao2023}.
+Na Engenharia de Software, há agentes capazes de resolver \textit{issues} reais
+de repositórios, avaliados em \textit{benchmarks} como o SWE-bench, e revisões
+recentes registram o uso de LLMs e de sistemas multiagentes em praticamente
+todas as fases do SDLC \cite{hou2024,he2025}. Com menor supervisão humana,
+cresce a preocupação com a confiança necessária para aceitar o que produzem
+\cite{roychoudhury2025}. Neste mapeamento, consideram-se tanto agentes autônomos
+quanto LLMs usados como assistentes, pois os mecanismos de explicação são, em
+grande parte, os mesmos.
 
 \subsection{Explicabilidade, transparência e interpretabilidade}
 
-Os três termos são frequentemente usados de forma intercambiável, mas têm
-significados distintos. Interpretabilidade refere-se à capacidade de apresentar
-o comportamento de um modelo em termos compreensíveis a um humano;
-explicabilidade diz respeito às explicações produzidas, durante ou após a
-execução, para justificar uma saída específica; e transparência refere-se à
-visibilidade sobre o funcionamento do sistema e sobre o processo que levou a um
-resultado \cite{barredo2020}. Em agentes, a transparência inclui a
-rastreabilidade da trajetória: a sequência de pensamentos, chamadas de
-ferramentas e observações.
+Os três termos têm significados distintos. Interpretabilidade é a capacidade de
+apresentar o comportamento de um modelo em termos compreensíveis a um humano;
+explicabilidade refere-se às explicações que justificam uma saída específica; e
+transparência, à visibilidade sobre o funcionamento do sistema e o processo que
+levou a um resultado \cite{barredo2020}. Em agentes, a transparência inclui a
+rastreabilidade da trajetória: pensamentos, chamadas de ferramentas e
+observações.
 
 Em LLMs, as explicações incluem raciocínio verbalizado, como
 \textit{chain-of-thought} (CoT) \cite{wei2022}; atribuição de importância à
 entrada, como valores de Shapley \cite{lundberg2017}; proveniência das
-informações recuperadas em geração aumentada por recuperação (RAG)
-\cite{lewis2020}; e sinais de incerteza. Uma questão central é a fidelidade
-(\textit{faithfulness}), isto é, o quanto a explicação reflete o processo que de
-fato produziu a saída \cite{jacovi2020}. Turpin et al. \cite{turpin2023} mostram
-que explicações em CoT podem ser plausíveis e não fiéis.
+informações em geração aumentada por recuperação (RAG) \cite{lewis2020}; e
+sinais de incerteza. Uma questão central é a fidelidade (\textit{faithfulness}):
+o quanto a explicação reflete o processo que de fato produziu a saída
+\cite{jacovi2020}; explicações em CoT podem ser plausíveis e não fiéis
+\cite{turpin2023}.
 
 \subsection{Trabalhos relacionados}
 
-Mohammadkhani et al. \cite{mohammadkhani2023} revisaram 24 estudos sobre
-explicabilidade aplicada à Engenharia de Software, concentrados em predição de
-defeitos, e Cao et al. \cite{cao2024} ampliaram o escopo para 108 estudos
-baseados em aprendizado de máquina e profundo. Ambas tratam majoritariamente de
-modelos anteriores aos LLMs e não consideram agentes. Já Hou et al.
-\cite{hou2024} e He et al. \cite{he2025} mapeiam o uso de LLMs e de sistemas
-multiagentes na área, mas abordam a explicabilidade apenas como desafio em
-aberto. Este trabalho situa-se na interseção desses dois conjuntos.
+Mohammadkhani et al. \citeano{mohammadkhani2023} revisaram 24 estudos sobre
+explicabilidade na Engenharia de Software, concentrados em predição de
+defeitos, e Cao et al. \citeano{cao2024} ampliaram o escopo para 108 estudos
+baseados em aprendizado de máquina e profundo; ambas tratam sobretudo de modelos
+anteriores aos LLMs e não consideram agentes. Já Hou et al. \citeano{hou2024} e He
+et al. \citeano{he2025} mapeiam o uso de LLMs e de sistemas multiagentes, mas
+abordam a explicabilidade apenas como desafio em aberto. Este trabalho situa-se
+na interseção desses dois conjuntos.
 
 \section{Metodologia}\label{sec:metodologia}
 
-O estudo segue as diretrizes de Petersen et al. \cite{petersen2015} para
-mapeamentos sistemáticos, complementadas pelas recomendações de Kitchenham e
-Charters \cite{kitchenham2007} para a definição do protocolo. Os registros de
-todas as etapas (resultados triados, decisões, critérios aplicados e
-\textit{snowballing}) estão disponíveis na planilha de seleção do repositório do
-estudo.
-
-\subsection{Objetivo do mapeamento}
-
-Este estudo tem como objetivo mapear sistematicamente as abordagens de
-explicabilidade e transparência aplicadas a agentes baseados em LLMs no contexto
-da Engenharia de Software, identificando as técnicas utilizadas, sua aplicação
-nas diferentes fases do SDLC e os métodos empregados para avaliar sua eficácia e
-utilidade para desenvolvedores.
+O estudo segue as diretrizes de Petersen et al. \citeano{petersen2015} para
+mapeamentos sistemáticos, complementadas por Kitchenham e Charters
+\citeano{kitchenham2007} na definição do protocolo. Seu objetivo é mapear as
+abordagens de explicabilidade e transparência aplicadas a agentes baseados em
+LLM na Engenharia de Software, identificando as técnicas utilizadas, sua
+aplicação nas fases do SDLC e os métodos empregados para avaliar sua eficácia e
+utilidade para desenvolvedores. Os registros de todas as etapas estão
+disponíveis na planilha de seleção do repositório do estudo.
 
 \subsection{Questões de pesquisa}
 
@@ -192,13 +180,11 @@ utilidade para desenvolvedores.
 
 \subsection{Estratégia de busca}
 
-A \textit{string} de busca foi construída a partir de três grupos de termos
-derivados das questões de pesquisa: (i) a tecnologia investigada (LLMs e
-agentes de LLM); (ii) o atributo de interesse (explicabilidade, transparência e
-interpretabilidade); e (iii) o domínio de aplicação (Engenharia e
-desenvolvimento de software). Os sinônimos de cada grupo foram combinados pelo
-operador OR e os grupos, pelo operador AND, resultando na seguinte
-\textit{string}:
+A \textit{string} de busca combina três grupos de termos derivados das questões
+de pesquisa: (i) a tecnologia (LLMs e agentes de LLM); (ii) o atributo de
+interesse (explicabilidade, transparência e interpretabilidade); e (iii) o
+domínio (Engenharia e desenvolvimento de software). Os sinônimos de cada grupo
+foram combinados por OR e os grupos, por AND:
 
 \begin{quote}\small\ttfamily
 ("large language model" OR "LLM agent" OR "LLM agents") AND
@@ -206,25 +192,21 @@ operador OR e os grupos, pelo operador AND, resultando na seguinte
 ("software engineering" OR "software development")
 \end{quote}
 
-A \textit{string} foi aplicada a todos os campos disponíveis, sem restrição de
-período. Termos de técnicas específicas (ex.: \textit{chain-of-thought}) foram
-omitidos para não enviesar a busca. Uma busca exploratória foi realizada em
-1º/10/2026 para calibrar a \textit{string}; a busca definitiva, cujos resultados
-são relatados aqui, foi executada em 15/11/2026. Para mitigar a cobertura
-limitada da \textit{string}, a busca automática foi complementada por
-\textit{snowballing} para trás e para frente \cite{wohlin2014} a partir dos
-estudos incluídos.
+A \textit{string} foi aplicada a todos os campos, sem restrição de período;
+termos de técnicas específicas (ex.: \textit{chain-of-thought}) foram omitidos
+para não enviesar a busca. Uma busca exploratória em 1º/10/2026 calibrou a
+\textit{string}; a busca definitiva, relatada aqui, foi executada em 15/11/2026
+e complementada por \textit{snowballing} para trás e para frente
+\cite{wohlin2014} a partir dos estudos incluídos.
 
 \subsection{Fontes de busca}
 
 Foram utilizadas a IEEE Xplore e a ACM Digital Library, que indexam os
-principais veículos de Engenharia de Software, e o Google Scholar, que abrange
-também \textit{preprints}, relevantes em uma área de evolução rápida. Na busca
-definitiva, as bases retornaram 65 (IEEE Xplore), 3.567 (ACM Digital Library) e
-cerca de 17.700 (Google Scholar) resultados. Como os resultados são ordenados
-por relevância e o volume é elevado, a triagem considerou os 8 primeiros
-resultados na IEEE Xplore, os 9 primeiros na ACM Digital Library e os 8
-primeiros no Google Scholar.
+principais veículos da área, e o Google Scholar, que abrange também
+\textit{preprints}. As bases retornaram 65 (IEEE Xplore), 3.567 (ACM Digital
+Library) e cerca de 17.700 (Google Scholar) resultados. Como os resultados são
+ordenados por relevância e o volume é elevado, a triagem considerou os 8, 9 e 8
+primeiros resultados de cada base, respectivamente.
 
 \subsection{Critérios de inclusão e exclusão}
 
@@ -263,25 +245,25 @@ nenhum dos critérios de exclusão (CE):
 
 \subsection{Processo de seleção dos estudos}
 
-A seleção foi realizada em quatro etapas: (1) reunião dos resultados e remoção
-de duplicados (CE1); (2) aplicação dos critérios a título, resumo e
-palavras-chave, com os casos duvidosos encaminhados à etapa seguinte; (3)
-reaplicação dos critérios aos casos encaminhados, com atenção a CE5 e CE6, que
-distinguem os estudos em que a explicabilidade do LLM é objeto de investigação
-daqueles em que o LLM é apenas instrumento; e (4) \textit{snowballing} a partir
-dos estudos incluídos. Por exemplo, Obaidi et al. \cite{obaidi2026} propõem um
-fluxo para redigir requisitos de explicabilidade de sistemas com IA, e não
-investigam a explicabilidade do LLM, tendo sido excluídos por CE6. Cada decisão
-foi registrada com o critério aplicado e uma justificativa.
+A seleção teve quatro etapas: (1) reunião dos resultados e remoção de
+duplicados (CE1); (2) aplicação dos critérios a título, resumo e
+palavras-chave, encaminhando os casos duvidosos; (3) reaplicação dos critérios
+aos casos encaminhados, com atenção a CE5 e CE6, que separam os estudos em que a
+explicabilidade do LLM é objeto de investigação daqueles em que o LLM é apenas
+instrumento; e (4) \textit{snowballing}. Cada decisão foi registrada com o
+critério e uma justificativa.
 
-A Tabela~\ref{tab:selecao} resume o fluxo. Os 25 resultados não continham
-duplicatas entre si. Na etapa 2, 18 foram excluídos, 14 deles por CE3, o que
-indica que a maior parte dos resultados trata de LLMs em Engenharia de Software
-sem abordar a explicabilidade. Dos 7 estudos encaminhados à etapa 3, 2 foram excluídos
-por CE7: Dawoodjee et al. \cite{dawoodjee2026} e Mohammad et al.
-\cite{mohammad2026} relatam, nos resumos, a avaliação da explicabilidade de
-verificações e predições, mas seus textos completos não estavam acessíveis.
-Assim, 5 estudos foram incluídos a partir das bases.
+A Tabela~\ref{tab:selecao} resume o fluxo. Na etapa 2, 14 dos 18 excluídos o
+foram por CE3, isto é, a maioria dos resultados trata de LLMs em Engenharia de
+Software sem abordar a explicabilidade. Na etapa 3, Dawoodjee et al.
+\citeano{dawoodjee2026} e Mohammad et al. \citeano{mohammad2026} foram excluídos por
+CE7, pois seus textos completos não estavam acessíveis.
+
+O \textit{snowballing} partiu dos 5 estudos incluídos e foi iterado até que
+nenhuma nova inclusão ocorresse: para trás, as listas de referências foram
+triadas por título; para frente, foram verificadas as citações aos estudos
+incluídos. Dos 19 estudos avaliados, 12 foram incluídos e 7 excluídos (4 por
+CE4, por tratarem de modelos anteriores aos LLMs, e 1 por CE1, CE2 e CE3 cada).
 
 \begin{table}[ht]
 \centering
@@ -304,68 +286,54 @@ Incluídos a partir das bases & 0 & 1 & 4 & 5 \\
 \end{tabular}
 \end{table}
 
-O \textit{snowballing} partiu dos 5 estudos incluídos e foi iterado sobre os
-novos estudos até que nenhuma nova inclusão ocorresse. Na direção para trás,
-as listas de referências foram triadas por título; na direção para frente,
-foram verificadas as citações aos estudos incluídos. Dos 19 estudos avaliados,
-12 foram incluídos e 7 excluídos (4 por CE4, por tratarem de modelos anteriores
-aos LLMs, e 1 por CE1, CE2 e CE3 cada). Por exemplo, a partir de Vitale et al.
-\cite{vitale2026} chegou-se a Palacio et al. \cite{palacio2024}, deste a Spiess
-et al. \cite{spiess2025}, que cita Vasconcelos et al. \cite{vasconcelos2025}, que
-por sua vez cita Sun et al. \cite{sun2022}.
-
 \subsection{Extração e classificação dos dados}
 
-Para cada estudo, um formulário registrou: identificação (autores, ano,
-veículo); nível de autonomia (assistente ou agente); técnica de explicabilidade
-(RQ1); fase do SDLC (RQ2); efeitos sobre confiança, decisão, depuração e excesso
-de confiança (RQ3); e método de avaliação, com métricas e número de
-participantes (RQ4).
+Para cada estudo, registraram-se: identificação; nível de autonomia (assistente
+ou agente); técnica (RQ1); fase do SDLC (RQ2); efeitos sobre confiança, decisão,
+depuração e excesso de confiança (RQ3); e método de avaliação (RQ4).
 
 As técnicas foram classificadas por codificação aberta seguida de agrupamento,
-partindo dos exemplos citados na RQ1, o que resultou em cinco categorias: T1 --
+partindo dos exemplos da RQ1, o que resultou em cinco categorias: T1 --
 justificativa em linguagem natural (raciocínio verbalizado, CoT ou explicação
 textual da saída); T2 -- atribuição pós-hoc (importância de \textit{tokens},
 trechos ou características da entrada); T3 -- sinalização de incerteza e
 confiança; T4 -- rastreamento de trajetórias e proveniência (registro e análise
-dos passos do agente ou da origem do artefato gerado); e T5 -- elicitação de
-necessidades de explicação. Cada estudo foi associado à técnica predominante.
-As fases do SDLC seguem Hou et al. \cite{hou2024}, acrescidas de revisão de
-código e de uma categoria transversal para estudos que abrangem várias fases.
+dos passos do agente ou da origem do artefato); e T5 -- elicitação de
+necessidades de explicação. Cada estudo foi associado à técnica predominante. As
+fases do SDLC seguem Hou et al. \citeano{hou2024}, acrescidas de revisão de código
+e de uma categoria transversal.
 
 \section{Resultados}\label{sec:resultados}
 
 Os 17 estudos incluídos (Tabela~\ref{tab:estudos}) foram publicados entre 2022 e
-2026, com crescimento a partir de 2025 (1 em 2022, 2 em 2024, 9 em 2025 e 5 em
-2026). Onze foram publicados em veículos com revisão por pares e seis são
-\textit{preprints}. Cinco vieram diretamente das bases e doze do
-\textit{snowballing}.
+2026 (1 em 2022, 2 em 2024, 9 em 2025 e 5 em 2026); onze passaram por revisão
+por pares e seis são \textit{preprints}.
 
 \begin{table}[ht]
 \centering
 \caption{Estudos primários incluídos no mapeamento}\label{tab:estudos}
 \scriptsize
-\begin{tabular}{@{}lL{3.3cm}L{2.9cm}cL{1.2cm}L{3.5cm}@{}}
+\begin{tabular}{@{}lL{2.4cm}L{3.4cm}cL{1.2cm}L{3.9cm}@{}}
 \toprule
 ID & Estudo & Fase / atividade & Téc. & Origem & Avaliação das explicações \\
 \midrule
-E01 & Sun et al. \cite{sun2022} & Implementação (geração) & T5 & SB & Workshops com 43 engenheiros \\
-E02 & Palacio et al. \cite{palacio2024}$^\dagger$ & Implementação (geração) & T2 & SB & Questionário (24); análise causal \\
-E03 & Li et al. \cite{li2024} & Manutenção (sumarização) & T2 & SB & \textit{Eye-tracking} vs.\ atribuição \\
-E04 & Virk et al. \cite{virk2025} & Manutenção (sumarização) & T3 & SB & Calibração (Brier, ECE) \\
-E05 & Kang et al. \cite{kang2025} & Depuração e reparo & T1 & Scholar & Estudo com 20 participantes \\
-E06 & Vasconcelos et al. \cite{vasconcelos2025} & Implementação (completação) & T3 & SB & Experimento controlado (30) \\
-E07 & Spiess et al. \cite{spiess2025} & Implementação (geração) & T3 & SB & Calibração (várias tarefas) \\
-E08 & Wang et al. \cite{wang2025} & Implementação (geração) & T4 & ACM & Sem avaliação (proposta) \\
-E09 & Ceka et al. \cite{ceka2025}$^\dagger$ & Manutenção (\textit{issues}) & T4 & SB & Trajetórias de 5 agentes \\
-E10 & Bouzenia e Pradel \cite{bouzenia2025} & Manutenção (\textit{issues}) & T4 & SB & 120 trajetórias anotadas \\
-E11 & Majgaonkar et al. \cite{majgaonkar2025}$^\dagger$ & Manutenção (\textit{issues}) & T4 & SB & Trajetórias de 3 agentes \\
-E12 & Khati et al. \cite{khati2025}$^\dagger$ & Implementação e testes & T2 & SB & Entropia; estudo com usuários (37) \\
-E13 & Vitale et al. \cite{vitale2026} & Implementação (geração) & T2 & Scholar & Fidelidade; questionário (37) \\
-E14 & Akbarova et al. \cite{akbarova2026} & Testes (fronteira) & T1 & SB & Questionário (27); entrevistas (6) \\
-E15 & Joshi \cite{joshi2026}$^\dagger$ & Depuração (falhas de agentes) & T4 & Scholar & Estudo com 20 participantes \\
-E16 & Li e Storhaug \cite{listorhaug2026} & Transversal (avaliação de agentes) & T4 & Scholar & 18 artigos; estudo de caso \\
-E17 & Gao et al. \cite{gao2026}$^\dagger$ & Revisão de código & T1 & SB & Experimento \textit{within-subjects} (34) \\
+E01 & Sun et al. \citeano{sun2022} & Implementação (geração) & T5 & SB & Workshops com 43 engenheiros \\
+E02 & Palacio et al. \citeano{palacio2024}$^\dagger$ & Implementação (geração) & T2 & SB & Questionário (24); análise causal \\
+E03 & Li et al. \citeano{li2024} & Manutenção (sumarização) & T2 & SB & \textit{Eye-tracking} vs.\ atribuição \\
+E04 & Virk et al. \citeano{virk2025} & Manutenção (sumarização) & T3 & SB & Calibração (Brier, ECE) \\
+E05 & Kang et al. \citeano{kang2025} & Depuração e reparo & T1 & Scholar & Estudo com 20 participantes \\
+E06 & Vasconcelos et al. \citeano{vasconcelos2025} & Implementação (completação) & T3 & SB & Experimento controlado (30) \\
+E07 & Spiess et al. \citeano{spiess2025} & Implementação (geração) & T3 & SB & Calibração (várias tarefas) \\
+E08 & Wang et al. \citeano{wang2025} & Implementação (geração) & T4 & ACM & Sem avaliação (proposta) \\
+E09 & Ceka et al. \citeano{ceka2025}$^\dagger$ & Manutenção (\textit{issues}) & T4 & SB & Trajetórias de 5 agentes \\
+E10 & Bouzenia e Pradel \citeano{bouzenia2025} & Manutenção (\textit{issues}) & T4 & SB & 120 trajetórias anotadas \\
+E11 & Majgaonkar et al. \citeano{majgaonkar2025}$^\dagger$ & Manutenção (\textit{issues}) & T4 & SB & Trajetórias de 3 agentes \\
+E12 & Khati et al. \citeano{khati2025}$^\dagger$ & Implementação e testes & T2 & SB & Entropia; estudo com usuários (37) \\
+E13 & Vitale et al. \citeano{vitale2026} & Implementação (geração) & T2 & Scholar & Fidelidade; questionário (37) \\
+E14 & Akbarova et al. \citeano{akbarova2026} & Testes (fronteira) & T1 & SB & Questionário (27); entrevistas (6) \\
+E15 & Joshi \citeano{joshi2026}$^\dagger$ & Depuração (falhas de agentes) & T4 & Scholar & Estudo com 20 participantes \\
+E16 & Li e Storhaug \citeano{listorhaug2026} & Transversal (avaliação de agentes) & T4 & Scholar & 18 artigos; estudo de caso \\
+E17 & Gao et al. \citeano{gao2026}$^\dagger$ & Revisão de código & T1 & SB & Experimento \textit{within-subjects} (34) \\
 \bottomrule
 \multicolumn{6}{@{}L{14.2cm}@{}}{$^\dagger$ \textit{Preprint} sem revisão por pares até a data da busca. SB: \textit{snowballing}. T1: justificativa em linguagem natural; T2: atribuição pós-hoc; T3: incerteza e confiança; T4: trajetórias e proveniência; T5: necessidades de explicação.}
 \end{tabular}
@@ -377,40 +345,36 @@ O rastreamento de trajetórias e proveniência (T4) é a categoria mais frequent
 (6 estudos). Quatro estudos analisam sequências de pensamento, ação e resultado
 de agentes que resolvem \textit{issues}
 \cite{bouzenia2025,ceka2025,majgaonkar2025} ou falham em tarefas de programação
-\cite{joshi2026}; neste último, os registros brutos são convertidos em
-explicações estruturadas, com fluxos visuais e recomendações. Li e Storhaug
-\cite{listorhaug2026} defendem a publicação dessas trajetórias para explicar por
-que uma abordagem agêntica supera outra, e Wang et al. \cite{wang2025} propõem
-embutir a rastreabilidade entre requisito e código gerado no próprio
+\cite{joshi2026}, convertendo, neste último, os registros brutos em explicações
+estruturadas. Li e Storhaug \citeano{listorhaug2026} defendem publicar essas
+trajetórias para explicar por que uma abordagem agêntica supera outra, e Wang et
+al. \citeano{wang2025} propõem embutir a rastreabilidade entre requisito e código no
 \textit{pipeline} de geração.
 
 A atribuição pós-hoc (T2, 4 estudos) inclui valores de Shapley sobre
-características de alto nível da entrada \cite{vitale2026}, confiança por
-\textit{token} alinhada à árvore sintática \cite{palacio2024}, agregação global
-de explicações por \textit{token} \cite{khati2025} e a comparação entre os
-trechos de código considerados importantes pelo modelo e pelos programadores
-\cite{li2024}. A justificativa em linguagem natural (T1, 3 estudos) aparece em
-ciclos de hipótese e experimento na depuração \cite{kang2025}, em explicações de
-testes de fronteira \cite{akbarova2026} e em comentários de revisão de código
-\cite{gao2026}. A sinalização de incerteza (T3, 3 estudos) compreende o destaque
-de \textit{tokens} propensos a edição \cite{vasconcelos2025} e a calibração da
-confiança de resumos \cite{virk2025} e de código gerado \cite{spiess2025}. Por
-fim, Sun et al. \cite{sun2022} (T5) elicitaram necessidades de explicação com 43
-engenheiros.
+características da entrada \cite{vitale2026}, confiança por \textit{token}
+alinhada à árvore sintática \cite{palacio2024}, agregação global de explicações
+por \textit{token} \cite{khati2025} e a comparação entre os trechos considerados
+importantes pelo modelo e pelos programadores \cite{li2024}. A justificativa em
+linguagem natural (T1, 3 estudos) aparece na depuração por hipótese e
+experimento \cite{kang2025}, em testes de fronteira \cite{akbarova2026} e na
+revisão de código \cite{gao2026}. A sinalização de incerteza (T3, 3 estudos)
+compreende o destaque de \textit{tokens} propensos a edição
+\cite{vasconcelos2025} e a calibração da confiança de resumos \cite{virk2025} e
+de código \cite{spiess2025}. Por fim, Sun et al. \citeano{sun2022} (T5) elicitaram
+necessidades de explicação com 43 engenheiros.
 
-Das técnicas citadas na RQ1, as árvores de decisão de agentes não foram
-encontradas em nenhum estudo, e a proveniência em RAG aparece apenas como
-proposta, na validação aumentada por recuperação de Wang et al. \cite{wang2025},
-sem avaliação. Além disso, 6 dos 17 estudos (E05, E09, E10, E11, E15 e E16)
-tratam de agentes com autonomia de múltiplos passos; os demais investigam LLMs
-usados como assistentes.
+Das técnicas citadas na RQ1, árvores de decisão de agentes não foram
+encontradas, e a proveniência em RAG aparece apenas como proposta, sem
+avaliação \cite{wang2025}. Além disso, apenas 6 dos 17 estudos (E05, E09, E10,
+E11, E15 e E16) tratam de agentes com autonomia de múltiplos passos; os demais
+investigam LLMs usados como assistentes.
 
 \subsection{RQ2: Explicabilidade ao longo do SDLC}
 
 A Tabela~\ref{tab:fases} relaciona as técnicas às fases do SDLC. Implementação
-(7 estudos) e manutenção (5) concentram 12 dos 17 estudos, seguidas por
-depuração (2); testes, revisão de código e a categoria transversal têm um estudo
-cada. Nenhum estudo incluído trata de requisitos, arquitetura ou operação.
+e manutenção concentram 12 dos 17 estudos, e nenhum trata de requisitos,
+arquitetura ou operação.
 
 \begin{table}[ht]
 \centering
@@ -434,9 +398,9 @@ Total & 7 & 5 & 2 & 1 & 1 & 1 & 17 \\
 A técnica empregada varia com a fase. A atribuição pós-hoc (T2) e a sinalização
 de incerteza (T3) concentram-se na implementação e na sumarização de código, em
 que a saída é um artefato que pode ser ancorado em trechos da entrada. O
-rastreamento de trajetórias (T4) predomina na manutenção, pois está associado a
-agentes que resolvem \textit{issues} em vários passos. Já nas atividades em que
-a saída é um julgamento, como depuração, testes e revisão de código, predomina a
+rastreamento de trajetórias (T4) predomina na manutenção, associado a agentes
+que resolvem \textit{issues} em vários passos. Nas atividades em que a saída é
+um julgamento (depuração, testes e revisão de código), predomina a
 justificativa em linguagem natural (T1): explica-se por que um \textit{patch}
 corrige a falha \cite{kang2025}, por que um par de entrada e saída é uma
 fronteira \cite{akbarova2026} ou por que um trecho deve ser alterado
@@ -447,232 +411,199 @@ fronteira \cite{akbarova2026} ou por que um trecho deve ser alterado
 Os estudos com desenvolvedores indicam efeitos positivos, mas não uniformes. Na
 depuração, as explicações do AutoSD aumentaram a acurácia ao julgar a corretude
 de \textit{patches} em cinco de seis \textit{bugs}, sem aumentar o tempo, e 70\%
-dos 20 participantes declararam desejar explicações \cite{kang2025}. Na análise
-de falhas de agentes, explicações estruturadas a partir das trajetórias
-permitiram identificar a causa-raiz 2,8 vezes mais rápido e propor correções
-corretas com acurácia 73\% maior do que com os registros brutos
-\cite{joshi2026}. Na revisão de código, Gao et al. \cite{gao2026} observaram, com
-34 participantes, que explicações completas geraram a maior confiança
+dos 20 participantes quiseram explicações \cite{kang2025}.
+Explicações estruturadas a partir de trajetórias de agentes permitiram
+identificar a causa-raiz de falhas 2,8 vezes mais rápido e propor correções com
+acurácia 73\% maior do que com os registros brutos \cite{joshi2026}. Na revisão
+de código (34 participantes), explicações completas geraram a maior confiança
 percebida, mas a maior concordância com a IA ocorreu com explicações moderadas,
-sugerindo que explicações detalhadas levam o desenvolvedor a questionar mais. Na
+sugerindo que explicações detalhadas levam a questionar mais \cite{gao2026}. Na
 completação de código, destacar os \textit{tokens} com maior probabilidade de
-edição levou a edições mais direcionadas e a tarefas mais rápidas, enquanto
-destacar \textit{tokens} de baixa probabilidade de geração não trouxe benefício
+edição tornou as edições mais direcionadas e as tarefas mais rápidas, ao
+contrário de destacar \textit{tokens} de baixa probabilidade de geração
 \cite{vasconcelos2025}.
 
-Nem todos os resultados são favoráveis. Li et al. \cite{li2024} relatam
-resultados negativos: o foco atribuído ao modelo na sumarização de código não
-corresponde ao foco dos programadores medido por \textit{eye-tracking}. Quanto
-ao excesso de confiança, as evidências ainda são exploratórias, mas apontam
-riscos. Vasconcelos et al. \cite{vasconcelos2025} observaram participantes que
-editaram apenas os trechos destacados e ignoraram um caso de borda, lendo a
-ausência de destaque como sinal de corretude. Akbarova et al.
-\cite{akbarova2026} relatam que uma única explicação alucinada reduziu
-fortemente as avaliações dos participantes. Spiess et al. \cite{spiess2025}
-mostram que os modelos de código não são bem calibrados sem ajuste, o que limita o uso direto de sua confiança como sinal
-para o desenvolvedor. Nenhum estudo mediu o excesso de confiança de forma
-longitudinal ou em contexto real de desenvolvimento.
+Nem todos os resultados são favoráveis: o foco atribuído ao modelo na
+sumarização de código não corresponde ao foco dos programadores medido por
+\textit{eye-tracking} \cite{li2024}. Quanto ao excesso de confiança, as
+evidências são exploratórias, mas apontam riscos: participantes editaram apenas
+os trechos destacados e ignoraram um caso de borda, lendo a ausência de destaque
+como sinal de corretude \cite{vasconcelos2025}; uma única explicação alucinada
+reduziu fortemente as avaliações dos participantes \cite{akbarova2026}; e os
+modelos de código não são bem calibrados sem ajuste, o que limita o uso direto
+de sua confiança como sinal \cite{spiess2025}. Nenhum estudo mediu o excesso de
+confiança de forma longitudinal ou em contexto real de desenvolvimento.
 
 \subsection{RQ4: Métodos de avaliação das explicações}
 
 Os estudos combinam três tipos de avaliação (Tabela~\ref{tab:estudos}): estudos
-com desenvolvedores (10 estudos), métricas automáticas (6) e análise
-qualitativa de trajetórias (4); um estudo \cite{wang2025} não apresenta
-avaliação. Entre os estudos com usuários predominam questionários Likert sobre
-clareza, utilidade e confiança; experimentos controlados com medidas de
-desempenho são menos frequentes \cite{kang2025,vasconcelos2025,gao2026,joshi2026},
-e as amostras variam de 20 a 43 participantes. As métricas automáticas incluem
-calibração \cite{virk2025,spiess2025}, entropia \cite{khati2025}, fidelidade
+com desenvolvedores (10), métricas automáticas (6) e análise qualitativa de
+trajetórias (4); apenas Wang et al. \citeano{wang2025} não apresentam avaliação.
+Nos estudos com usuários predominam questionários Likert sobre clareza,
+utilidade e confiança; experimentos controlados com medidas de desempenho são
+menos frequentes \cite{kang2025,vasconcelos2025,gao2026,joshi2026}, e as amostras
+variam de 20 a 43 participantes. As métricas automáticas incluem calibração
+\cite{virk2025,spiess2025}, entropia \cite{khati2025}, fidelidade
 \cite{vitale2026}, inferência causal \cite{palacio2024} e o alinhamento entre a
 atribuição do modelo e o foco humano \cite{li2024}.
 
-Apenas dois estudos avaliaram explicitamente a fidelidade das explicações:
-Vitale et al. \cite{vitale2026}, por meio de perturbação da entrada, e Palacio et
-al. \cite{palacio2024}, por inferência causal, ambos em T2. Nenhum dos três
-estudos de T1 avaliou a fidelidade das justificativas, embora haja evidência de
-explicações plausíveis, porém não fiéis \cite{turpin2023}. Nos estudos de T4, a
-trajetória é tratada como registro fiel do processo, mas nenhum verificou se o
-raciocínio verbalizado nos passos corresponde às ações executadas.
+Apenas dois estudos avaliaram explicitamente a fidelidade das explicações, ambos
+em T2: Vitale et al. \citeano{vitale2026}, por perturbação da entrada, e Palacio et
+al. \citeano{palacio2024}, por inferência causal. Nenhum estudo de T1 avaliou a
+fidelidade das justificativas, embora explicações plausíveis possam não ser
+fiéis \cite{turpin2023}. Nos estudos de T4, a trajetória é tratada como registro
+fiel do processo, sem verificar se o raciocínio verbalizado corresponde às
+ações executadas.
 
 \section{Ameaças à validade}\label{sec:ameacas}
 
-As ameaças foram analisadas segundo as categorias propostas por Ampatzoglou et
-al. \cite{ampatzoglou2019} para estudos secundários. Quanto à identificação dos
-estudos, a \textit{string} não inclui variações como \textit{explainable},
-\textit{explanation}, \textit{rationale} ou \textit{trajectory}, e a triagem nas
-bases foi limitada aos primeiros resultados por relevância, o que pode ter
-omitido estudos. Esse efeito é visível no resultado: 12 dos 17 estudos vieram
-do \textit{snowballing}. Além disso, uma versão preliminar deste trabalho,
-baseada na busca exploratória, incluía cinco estudos (sobre rastreabilidade de
-requisitos, causa-raiz de incidentes, localização de falhas, \textit{design
-rationale} e revisão de código) que não foram alcançados pelo processo
-documentado e, por isso, foram removidos; a ausência de requisitos, arquitetura e
-operação na Tabela~\ref{tab:fases} deve ser lida à luz dessa limitação. O
-\textit{snowballing} para frente restringiu-se às citações entre os estudos
-identificados, sem varredura completa de um índice de citações.
+As ameaças foram analisadas segundo as categorias de Ampatzoglou et al.
+\citeano{ampatzoglou2019}. Quanto à identificação dos estudos, a \textit{string}
+não inclui variações como \textit{explainable}, \textit{explanation}, \textit{rationale} ou
+\textit{trajectory}, e a triagem foi limitada aos primeiros resultados por
+relevância, o que pode ter omitido estudos, como indica a origem de 12 dos 17
+estudos no \textit{snowballing}, cuja direção para frente se restringiu às
+citações entre os estudos identificados. Além disso, uma versão preliminar
+deste trabalho incluía cinco estudos (sobre rastreabilidade de requisitos,
+causa-raiz de incidentes, localização de falhas, \textit{design rationale} e
+revisão de código) não alcançados pelo processo documentado, que foram
+removidos; a ausência de requisitos, arquitetura e operação na
+Tabela~\ref{tab:fases} deve ser lida à luz dessa limitação.
 
-Quanto à seleção, a distinção entre CE5 e CE6 envolve julgamento; para
-permitir sua verificação, cada decisão foi registrada com justificativa na
-planilha de seleção. Dois
-estudos potencialmente relevantes foram excluídos apenas por indisponibilidade
-do texto completo (CE7).
-
-Quanto à extração e classificação, as categorias T1--T5 foram definidas pelos
-autores e o registro apenas da técnica predominante pode subestimar
-combinações; por exemplo, Joshi \cite{joshi2026} combina trajetórias com
-justificativas em linguagem natural. Seis estudos são \textit{preprints}, cujos
-resultados podem mudar após a revisão por pares; foram mantidos por refletirem o
-estado atual de uma área de evolução rápida e estão identificados na
-Tabela~\ref{tab:estudos}. Por fim, quanto à validade das conclusões, as
+Quanto à seleção, a distinção entre CE5 e CE6 envolve julgamento, por isso cada
+decisão foi justificada; dois estudos potencialmente relevantes foram excluídos
+apenas por indisponibilidade do texto (CE7). Quanto à extração, as categorias
+T1--T5 foram definidas pelos autores, e registrar só a técnica predominante pode
+subestimar combinações (ex.: Joshi \citeano{joshi2026}). Os seis
+\textit{preprints} podem mudar após a revisão por pares. Por fim, as
 frequências relatadas são indicativas, não representativas.
 
 \section{Considerações finais}\label{sec:conclusao}
 
 Este artigo apresentou um mapeamento sistemático sobre explicabilidade e
-transparência em agentes baseados em LLM ao longo do SDLC. A análise de 17
-estudos mostrou que: (i) o rastreamento de trajetórias e a atribuição pós-hoc
-são as técnicas mais utilizadas, seguidas pela justificativa em linguagem
-natural e pela sinalização de incerteza; (ii) as pesquisas se concentram em
-implementação e manutenção, sem estudos sobre requisitos, arquitetura ou
-operação; (iii) as explicações tendem a melhorar a acurácia do julgamento e a
-velocidade da depuração, mas podem induzir dependência dos sinais exibidos e nem
-sempre refletem o foco humano; e (iv) a avaliação apoia-se em percepções de
-usuários e métricas automáticas, com pouca atenção à fidelidade.
+transparência em agentes baseados em LLM ao longo do SDLC. Nos 17 estudos
+analisados, predominam o rastreamento de trajetórias e a atribuição pós-hoc; as
+pesquisas concentram-se em implementação e manutenção; as explicações tendem a
+melhorar a acurácia do julgamento e a depuração, mas podem induzir dependência
+dos sinais exibidos; e a avaliação apoia-se em percepções de usuários e métricas
+automáticas, com pouca atenção à fidelidade.
 
 Como lacunas, destacam-se a ausência de estudos sobre árvores de decisão de
-agentes e de avaliações da proveniência em RAG, a escassez de explicações nas
-fases iniciais do SDLC, a falta de avaliação da fidelidade das justificativas e
-das trajetórias e a inexistência de estudos longitudinais sobre excesso de
-confiança em contexto industrial. Como trabalhos futuros, pretende-se ampliar a
-\textit{string} com termos como \textit{explanation} e \textit{trajectory},
-incluir bases como Scopus, realizar o \textit{snowballing} para frente sobre um
-índice de citações e avaliar a qualidade dos estudos primários.
+agentes e proveniência em RAG, a escassez de explicações nas fases iniciais do
+SDLC, a falta de avaliação da fidelidade das justificativas e trajetórias e a
+inexistência de estudos longitudinais sobre excesso de confiança. Como trabalhos
+futuros, pretende-se ampliar a \textit{string}, incluir a Scopus, realizar o
+\textit{snowballing} para frente sobre um índice de citações e avaliar a
+qualidade dos estudos primários.
 
 \begin{thebibliography}{99}
 
 \bibitem[Akbarova et al. 2026]{akbarova2026}
 Akbarova, S., Dobslaw, F., and Feldt, R. (2026). Understanding on the edge:
-LLM-generated boundary test explanations. In \textit{Proceedings of the IEEE/ACM
-International Conference on Automation of Software Test (AST)}.
+LLM-generated boundary test explanations. In \textit{Proc. IEEE/ACM Int. Conf.
+on Automation of Software Test (AST)}.
 
 \bibitem[Ampatzoglou et al. 2019]{ampatzoglou2019}
-Ampatzoglou, A., Bibi, S., Avgeriou, P., et al. (2019). Identifying,
-categorizing and mitigating threats to validity in software engineering
-secondary studies. \textit{Information and Software Technology}, 106:201--230.
+Ampatzoglou, A. et al. (2019). Identifying, categorizing and mitigating threats
+to validity in software engineering secondary studies. \textit{Information and
+Software Technology}, 106:201--230.
 
 \bibitem[Barredo Arrieta et al. 2020]{barredo2020}
-Barredo Arrieta, A., Díaz-Rodríguez, N., Del Ser, J., et al. (2020). Explainable
-artificial intelligence (XAI): Concepts, taxonomies, opportunities and
-challenges toward responsible AI. \textit{Information Fusion}, 58:82--115.
+Barredo Arrieta, A. et al. (2020). Explainable artificial intelligence (XAI):
+Concepts, taxonomies, opportunities and challenges toward responsible AI.
+\textit{Information Fusion}, 58:82--115.
 
 \bibitem[Bouzenia and Pradel 2025]{bouzenia2025}
 Bouzenia, I. and Pradel, M. (2025). Understanding software engineering agents: A
-study of thought-action-result trajectories. In \textit{Proceedings of the 40th
-IEEE/ACM International Conference on Automated Software Engineering (ASE)}.
+study of thought-action-result trajectories. In \textit{Proc. 40th IEEE/ACM Int.
+Conf. on Automated Software Engineering (ASE)}.
 
 \bibitem[Cao et al. 2024]{cao2024}
-Cao, S., Sun, X., Widyasari, R., et al. (2024). A systematic literature review on
-explainability for machine/deep learning-based software engineering research.
-arXiv:2401.14617.
+Cao, S. et al. (2024). A systematic literature review on explainability for
+machine/deep learning-based software engineering research. arXiv:2401.14617.
 
 \bibitem[Ceka et al. 2025]{ceka2025}
-Ceka, I., Pujar, S., Ramji, S., et al. (2025). Understanding software
-engineering agents through the lens of traceability: An empirical study.
-arXiv:2506.08311.
+Ceka, I. et al. (2025). Understanding software engineering agents through the
+lens of traceability: An empirical study. arXiv:2506.08311.
 
 \bibitem[Dawoodjee et al. 2026]{dawoodjee2026}
 Dawoodjee, I. E., Khurat, A., and Noraset, T. (2026). A multimodal large language
-model approach for automated security requirements verification. In
-\textit{Proceedings of the 23rd International Joint Conference on Computer
-Science and Software Engineering (JCSSE)}. IEEE.
+model approach for automated security requirements verification. In \textit{Proc.
+23rd Int. Joint Conf. on Computer Science and Software Engineering (JCSSE)}.
 
 \bibitem[Gao et al. 2026]{gao2026}
-Gao, Z., Muñoz Barón, M., Habiba, U., et al. (2026). Evaluating the impact of
-explainable AI on trust in AI-assisted code review. arXiv:2607.24601.
+Gao, Z. et al. (2026). Evaluating the impact of explainable AI on trust in
+AI-assisted code review. arXiv:2607.24601.
 
 \bibitem[He et al. 2025]{he2025}
 He, J., Treude, C., and Lo, D. (2025). LLM-based multi-agent systems for software
-engineering: Literature review, vision, and the road ahead. \textit{ACM
-Transactions on Software Engineering and Methodology}, 34(5).
+engineering: Literature review, vision, and the road ahead. \textit{ACM Trans.
+Softw. Eng. Methodol.}, 34(5).
 
 \bibitem[Hou et al. 2024]{hou2024}
-Hou, X., Zhao, Y., Liu, Y., et al. (2024). Large language models for software
-engineering: A systematic literature review. \textit{ACM Transactions on
-Software Engineering and Methodology}, 33(8).
+Hou, X. et al. (2024). Large language models for software engineering: A
+systematic literature review. \textit{ACM Trans. Softw. Eng. Methodol.}, 33(8).
 
 \bibitem[Jacovi and Goldberg 2020]{jacovi2020}
 Jacovi, A. and Goldberg, Y. (2020). Towards faithfully interpretable NLP systems:
-How should we define and evaluate faithfulness? In \textit{Proceedings of the
-58th Annual Meeting of the Association for Computational Linguistics (ACL)},
-pages 4198--4205.
+How should we define and evaluate faithfulness? In \textit{Proc. 58th Annual
+Meeting of the ACL}, pages 4198--4205.
 
 \bibitem[Joshi 2026]{joshi2026}
 Joshi, A. (2026). XAI for coding agent failures: Transforming raw execution
 traces into actionable insights. arXiv:2603.05941.
 
 \bibitem[Kang et al. 2025]{kang2025}
-Kang, S., Chen, B., Yoo, S., and Lou, J.-G. (2025). Explainable automated
-debugging via large language model-driven scientific debugging.
-\textit{Empirical Software Engineering}, 30(2):45.
+Kang, S. et al. (2025). Explainable automated debugging via large language
+model-driven scientific debugging. \textit{Empirical Software Engineering},
+30(2):45.
 
 \bibitem[Khati et al. 2025]{khati2025}
-Khati, D., Rodriguez-Cardenas, D., Palacio, D. N., et al. (2025). Enabling
-global, human-centered explanations for LLMs: From tokens to interpretable code
-and test generation. arXiv:2503.16771.
+Khati, D. et al. (2025). Enabling global, human-centered explanations for LLMs:
+From tokens to interpretable code and test generation. arXiv:2503.16771.
 
 \bibitem[Kitchenham and Charters 2007]{kitchenham2007}
 Kitchenham, B. and Charters, S. (2007). Guidelines for performing systematic
-literature reviews in software engineering. Technical Report EBSE-2007-01, Keele
+literature reviews in software engineering. Tech. Report EBSE-2007-01, Keele
 University and Durham University.
 
 \bibitem[Lewis et al. 2020]{lewis2020}
-Lewis, P., Perez, E., Piktus, A., et al. (2020). Retrieval-augmented generation
-for knowledge-intensive NLP tasks. In \textit{Advances in Neural Information
-Processing Systems (NeurIPS)}, volume 33.
+Lewis, P. et al. (2020). Retrieval-augmented generation for knowledge-intensive
+NLP tasks. In \textit{Advances in Neural Information Processing Systems
+(NeurIPS)}, 33.
 
 \bibitem[Li et al. 2024]{li2024}
-Li, J., Zhang, Y., Karas, Z., McMillan, C., Leach, K., and Huang, Y. (2024). Do
-machines and humans focus on similar code? Exploring explainability of large
-language models in code summarization. In \textit{Proceedings of the 32nd
-IEEE/ACM International Conference on Program Comprehension (ICPC)}. ACM.
+Li, J. et al. (2024). Do machines and humans focus on similar code? Exploring
+explainability of large language models in code summarization. In \textit{Proc.
+32nd IEEE/ACM Int. Conf. on Program Comprehension (ICPC)}.
 
 \bibitem[Li and Storhaug 2026]{listorhaug2026}
 Li, J. and Storhaug, A. (2026). Reproducible, explainable, and effective
-evaluations of agentic AI for software engineering. In \textit{Companion
-Proceedings of the 34th ACM International Conference on the Foundations of
-Software Engineering (FSE Companion)}.
+evaluations of agentic AI for software engineering. In \textit{Companion Proc.
+34th ACM Int. Conf. on the Foundations of Software Engineering (FSE)}.
 
 \bibitem[Lundberg and Lee 2017]{lundberg2017}
 Lundberg, S. M. and Lee, S.-I. (2017). A unified approach to interpreting model
 predictions. In \textit{Advances in Neural Information Processing Systems
-(NeurIPS)}, volume 30.
+(NeurIPS)}, 30.
 
 \bibitem[Majgaonkar et al. 2025]{majgaonkar2025}
-Majgaonkar, O., Fei, Z., Li, X., Sarro, F., and Ye, H. (2025). Understanding code
-agent behaviour: An empirical study of success and failure trajectories.
-arXiv:2511.00197.
+Majgaonkar, O. et al. (2025). Understanding code agent behaviour: An empirical
+study of success and failure trajectories. arXiv:2511.00197.
 
 \bibitem[Mohammad et al. 2026]{mohammad2026}
-Mohammad, F., Kakar, J. K., Bekale Be Ndong, D. R., Chas, M., and Ryu, D. (2026).
-CodeQual-Agent: An intelligent LLM-agent framework for automated software
-quality assessment with explainable predictions and real-time analysis. In
-\textit{IEEE International Conference on Software Testing, Verification and
-Validation Workshops (ICSTW)}.
+Mohammad, F. et al. (2026). CodeQual-Agent: An intelligent LLM-agent framework
+for automated software quality assessment with explainable predictions and
+real-time analysis. In \textit{IEEE Int. Conf. on Software Testing, Verification
+and Validation Workshops (ICSTW)}.
 
 \bibitem[Mohammadkhani et al. 2023]{mohammadkhani2023}
-Mohammadkhani, A. H., Bommi, N. S., Daboussi, M., et al. (2023). A systematic
-literature review of explainable AI for software engineering. arXiv:2302.06065.
-
-\bibitem[Obaidi et al. 2026]{obaidi2026}
-Obaidi, M., Droste, J., Deters, H., Herrmann, M., Krahl, M., and Schneider, K.
-(2026). From quality properties to practice: A guideline and workflow for
-explainability requirements. In \textit{Proceedings of the IEEE 34th
-International Requirements Engineering Conference (RE)}.
+Mohammadkhani, A. H. et al. (2023). A systematic literature review of explainable
+AI for software engineering. arXiv:2302.06065.
 
 \bibitem[Palacio et al. 2024]{palacio2024}
-Palacio, D. N., Rodriguez-Cardenas, D., Velasco, A., et al. (2024). Towards more
-trustworthy and interpretable LLMs for code through syntax-grounded
-explanations. arXiv:2407.08983.
+Palacio, D. N. et al. (2024). Towards more trustworthy and interpretable LLMs for
+code through syntax-grounded explanations. arXiv:2407.08983.
 
 \bibitem[Petersen et al. 2015]{petersen2015}
 Petersen, K., Vakkalanka, S., and Kuzniarz, L. (2015). Guidelines for conducting
@@ -680,65 +611,55 @@ systematic mapping studies in software engineering: An update.
 \textit{Information and Software Technology}, 64:1--18.
 
 \bibitem[Roychoudhury et al. 2025]{roychoudhury2025}
-Roychoudhury, A., Pasareanu, C., Pradel, M., and Ray, B. (2025). Agentic AI
-software engineers: Programming with trust. \textit{Communications of the ACM}.
+Roychoudhury, A. et al. (2025). Agentic AI software engineers: Programming with
+trust. \textit{Communications of the ACM}.
 
 \bibitem[Spiess et al. 2025]{spiess2025}
-Spiess, C., Gros, D., Pai, K. S., Pradel, M., Rabin, M. R. I., Alipour, A., Jha,
-S., Devanbu, P., and Ahmed, T. (2025). Calibration and correctness of language
-models for code. In \textit{Proceedings of the 47th IEEE/ACM International
-Conference on Software Engineering (ICSE)}.
+Spiess, C. et al. (2025). Calibration and correctness of language models for
+code. In \textit{Proc. 47th IEEE/ACM Int. Conf. on Software Engineering (ICSE)}.
 
 \bibitem[Sun et al. 2022]{sun2022}
-Sun, J., Liao, Q. V., Muller, M., et al. (2022). Investigating explainability of
-generative AI for code through scenario-based design. In \textit{Proceedings of
-the 27th International Conference on Intelligent User Interfaces (IUI)}, pages
-212--228. ACM.
+Sun, J. et al. (2022). Investigating explainability of generative AI for code
+through scenario-based design. In \textit{Proc. 27th Int. Conf. on Intelligent
+User Interfaces (IUI)}, pages 212--228.
 
 \bibitem[Turpin et al. 2023]{turpin2023}
-Turpin, M., Michael, J., Perez, E., and Bowman, S. R. (2023). Language models
-don't always say what they think: Unfaithful explanations in chain-of-thought
-prompting. In \textit{Advances in Neural Information Processing Systems
-(NeurIPS)}, volume 36.
+Turpin, M. et al. (2023). Language models don't always say what they think:
+Unfaithful explanations in chain-of-thought prompting. In \textit{Advances in
+Neural Information Processing Systems (NeurIPS)}, 36.
 
 \bibitem[Vasconcelos et al. 2025]{vasconcelos2025}
-Vasconcelos, H., Bansal, G., Fourney, A., et al. (2025). Generation
-probabilities are not enough: Uncertainty highlighting in AI code completions.
-\textit{ACM Transactions on Computer-Human Interaction}, 32(1).
+Vasconcelos, H. et al. (2025). Generation probabilities are not enough:
+Uncertainty highlighting in AI code completions. \textit{ACM Trans.
+Comput.-Hum. Interact.}, 32(1).
 
 \bibitem[Virk et al. 2025]{virk2025}
-Virk, Y., Devanbu, P., and Ahmed, T. (2025). Calibration of large language
-models on code summarization. \textit{Proceedings of the ACM on Software
-Engineering}, 2(FSE).
+Virk, Y., Devanbu, P., and Ahmed, T. (2025). Calibration of large language models
+on code summarization. \textit{Proc. ACM on Software Engineering}, 2(FSE).
 
 \bibitem[Vitale et al. 2026]{vitale2026}
-Vitale, A., Nguyen, K.-N., Poshyvanyk, D., Oliveto, R., Scalabrino, S., and
-Mastropaolo, A. (2026). Toward explaining large language models in software
-engineering tasks. \textit{ACM Transactions on Software Engineering and
-Methodology}.
+Vitale, A. et al. (2026). Toward explaining large language models in software
+engineering tasks. \textit{ACM Trans. Softw. Eng. Methodol.}
 
 \bibitem[Wang et al. 2025]{wang2025}
-Wang, F., Xi, X., Cui, Z., Dai, H., and Wang, X. (2025). Embedding traceability
-in large language model code generation: Towards trustworthy AI-augmented
-software engineering. In \textit{Companion Proceedings of the 33rd ACM
-International Conference on the Foundations of Software Engineering (FSE
-Companion)}, pages 1760--1763.
+Wang, F. et al. (2025). Embedding traceability in large language model code
+generation: Towards trustworthy AI-augmented software engineering. In
+\textit{Companion Proc. 33rd ACM Int. Conf. on the Foundations of Software
+Engineering (FSE)}, pages 1760--1763.
 
 \bibitem[Wei et al. 2022]{wei2022}
-Wei, J., Wang, X., Schuurmans, D., et al. (2022). Chain-of-thought prompting
-elicits reasoning in large language models. In \textit{Advances in Neural
-Information Processing Systems (NeurIPS)}, volume 35.
+Wei, J. et al. (2022). Chain-of-thought prompting elicits reasoning in large
+language models. In \textit{Advances in Neural Information Processing Systems
+(NeurIPS)}, 35.
 
 \bibitem[Wohlin 2014]{wohlin2014}
 Wohlin, C. (2014). Guidelines for snowballing in systematic literature studies
-and a replication in software engineering. In \textit{Proceedings of the 18th
-International Conference on Evaluation and Assessment in Software Engineering
-(EASE)}. ACM.
+and a replication in software engineering. In \textit{Proc. 18th Int. Conf. on
+Evaluation and Assessment in Software Engineering (EASE)}.
 
 \bibitem[Yao et al. 2023]{yao2023}
-Yao, S., Zhao, J., Yu, D., et al. (2023). ReAct: Synergizing reasoning and acting
-in language models. In \textit{International Conference on Learning
-Representations (ICLR)}.
+Yao, S. et al. (2023). ReAct: Synergizing reasoning and acting in language
+models. In \textit{Int. Conf. on Learning Representations (ICLR)}.
 
 \end{thebibliography}
 
